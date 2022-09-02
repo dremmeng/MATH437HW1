@@ -1,0 +1,107 @@
+---
+title: 'MATH 437 HW1'
+author: "Drew Remmenga"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+1.a.
+```{r}
+lizard <- read.csv("~/School/Math437/HW1/lizard.dat", sep="")
+op <- par(mfrow = c(1, 2), cex.lab = 1.5)
+boxplot(lizard$hls, xlab = "hls", col = "red")
+boxplot(lizard$svl, xlab = "svl", col = "red")
+par(op)
+
+```
+These two data have different medians.
+1.b.
+```{r}
+pairs(lizard[-1], lwd = 3, pch = 16, cex = 1.25, col = "red",
+gap = 0, xaxt = "n", yaxt = "n",
+panel = panel.smooth)
+```
+This data is mostly linear.
+1.c.
+A bagplot is the generalized boxplot to multiple variables.
+1.d.
+```{r}
+library(MVA)
+bvbox(lizard[3:4], xlab = "SVL", ylab = "HLS",
+pch = 19, cex = 1.25, col = "red")
+```
+1.e.
+```{r}
+var(lizard[-1])
+cor(lizard[-1])
+```
+1.f.
+```{r}
+mean(lizard$mass)
+mean(lizard$svl)
+mean(lizard$hls)
+median(lizard$mass)
+median(lizard$svl)
+median(lizard$hls)
+```
+1.g.
+```{r}
+sd(lizard$mass)
+sd(lizard$svl)
+sd(lizard$hls)
+mad(lizard$mass)
+mad(lizard$svl)
+mad(lizard$hls)
+```
+2.a.
+```{r}
+N = 500
+components = sample(1:2,prob=c(.99,.01),size=N,replace=TRUE)
+mus = c(0,3)
+sds = sqrt(c(1,4))
+samples = rnorm(n=N,mean=mus[components],sd=sds[components])
+boxplot(samples)
+```
+2.b.
+```{r}
+hist(samples)
+```
+3.a.
+```{r}
+x=seq(from=0,to=2*pi,length.out=N)
+e1 = rnorm(N^2)
+e2 = rnorm(N^2,0,200)
+U1 = runif(N^2)
+E = ifelse(U1<.99,e1,e2)
+E = matrix(E,N,N)
+means = apply(E[,1:500],2,mean)
+s = apply(E[,1:500],2,sd)
+m = sin(x)+means
+matplot(x,cbind(m,m+s,m-s),type="l", col=c("black","red","blue"),lwd=2)
+legend("topleft", legend=c("m","m+s","m-s"),col=c("black","red","blue"),lty=1:1,cex=.5)
+```
+3.b.
+```{r}
+medians=apply(E[,1:500],2,median)
+mads =apply(E[,1:500],2,mad)
+m = sin(x)+medians
+matplot(x,cbind(m,m+mads,m-mads),type="l", col=c("black","red","blue"),lwd=2)
+legend("topleft", legend=c("m","m+mads","m-mads"),col=c("black","red","blue"),lty=1:1,cex=.5)
+
+
+```
+3.c. Mads and medians are much more stable than standard deviations and means.
+4.a.
+```{r}
+x = c(1.1,2.1,3.1,4.1,2.1,4.1,6.1,8.1,3.1,6.1,9.1,12.1)
+A=matrix(x,nrow=3,ncol=4)
+svd(A)
+```
+4.b.
+```{r}
+svd_fact = svd(A)
+d=svd_fact$d
+u=svd_fact$u
+v=svd_fact$v
+d[1]*u[1:3,1]%*%t(v[1:4,1])
+```
